@@ -6,6 +6,8 @@ Solution for:
 http://www.practicepython.org/exercise/2014/04/30/13-fibonacci.html
 """
 
+from pprint import pprint as pp
+
 
 def is_int(str_val):
     """Returns True if input string contains a 'python safe' integer."""
@@ -68,15 +70,8 @@ def main():
         # Build the list of Fibonacci numbers by calling the iterator
         outseq = [val for val in fibit(int(length))]
 
-        # A little loop here to clean up the output when the list is long
-        items_per_line = 5
-        start = 0
-        end = items_per_line
-        print(outseq[start:end])
-        while end < len(outseq):
-            start = end
-            end += items_per_line
-            print(outseq[start:end])
+        # Use pprint to make the output nice for long lists
+        pp(outseq, compact=True)
 
 
 main()
