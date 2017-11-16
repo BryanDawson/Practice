@@ -7,15 +7,7 @@ http://www.practicepython.org/exercise/2014/04/16/11-check-primality-functions.h
 
 """
 
-
-def is_int(str_val):
-    """Returns True if input string contains a 'python safe' integer."""
-
-    try:
-        _ = int(str_val)
-    except ValueError:
-        return False
-    return True
+from InputHandler import inputintgen
 
 
 # strong probable prime
@@ -91,25 +83,16 @@ def isprime(n):
 def main():
     """ Run the check prime program. """
 
-    while True:
-
-        test = input(
-            """Choose a number to see if it is prime,
-               or type 'exit' to quit: """)
-
-        if test == "exit":  # User exits program
-            print("Goodbye! \n\n")
-            break
-
-        # Now we do some basic input error validation
-        if not is_int(test):
-            print(test, "doesn't look like a number, try again")
-            continue
+    for test in inputintgen("Choose a number to see if it is prime"):
 
         if is_sprp(int(test)):
             print(test, "is prime!")
         else:
             print(test, "is not prime.")
+
+    # user exited program
+    print("Goodbye!\n")
+
 
 
 main()

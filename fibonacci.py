@@ -5,8 +5,10 @@ Simple Fibonacci practice program.
 Solution for:
 http://www.practicepython.org/exercise/2014/04/30/13-fibonacci.html
 """
-
 from pprint import pprint as pp
+
+from InputHandler import inputintgen
+
 
 
 def is_int(str_val):
@@ -49,29 +51,16 @@ def fibit(count):
 def main():
     """ Run the fibonacci program. """
 
-    while True:
-
-        length = input(
-            """Choose a number for the length of the fibonacci sequence,
-               or type 'exit' to quit: """)
-
-        if length == "exit":  # User exits program
-            print("Goodbye! \n\n")
-            break
-
-        # Now we do some basic input error validation
-        if not is_int(length):
-            print(length, "doesn't look like a number, try again")
-            continue
-        elif int(length) < 1:
-            print("Zero or negative counts are not allowed, try again")
-            continue
+    for length in inputintgen("Choose a number for the length of the fibonacci sequence"):
 
         # Build the list of Fibonacci numbers by calling the iterator
         outseq = [val for val in fibit(int(length))]
 
         # Use pprint to make the output nice for long lists
         pp(outseq, compact=True)
+
+    # User stopped providing numbers
+    print("Goodbye!\n")
 
 
 main()
