@@ -6,7 +6,7 @@ Solution for:
 http://www.practicepython.org/exercise/2014/05/28/16-password-generator.html
 """
 
-from random import choice, randint, shuffle
+from random import choice, choices, shuffle
 import string
 from InputHandler import inputintgen
 
@@ -29,17 +29,17 @@ def pwgen(pwlength, pwtypes):
     # later the string will be shuffled to eliminate any implied type order
 
     for pwtype in pwtypes:
-        outstring += pwtype[randint(0, len(pwtype) - 1)]
+        outstring += choice(pwtype)
 
-    while len(outstring) < pwlength:
-        # randomly pick one of the types and then randomly pick a character
-        pwtype = choice(pwtypes)
-        outstring += pwtype[randint(0, len(pwtype) - 1)]
+    # Add another random string to get the required length
+    if len(outstring) < pwlength:
+        outstring += ''.join(choices(''.join(pwtypes),
+                                     k=(pwlength - len(outstring))))
 
     # Shuffle the password string to eliminate any implied type order
     lchars = list(outstring)
     shuffle(lchars)
-    outstring = "".join(lchars)
+    outstring = ''.join(lchars)
 
     return outstring
 
