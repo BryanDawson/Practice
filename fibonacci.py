@@ -10,7 +10,6 @@ from pprint import pprint as pp
 from InputHandler import inputintgen
 
 
-
 def is_int(str_val):
     """Returns True if input string contains a 'python safe' integer."""
 
@@ -21,15 +20,14 @@ def is_int(str_val):
     return True
 
 
-""" recursive version is elegant but very inefficient for large count
-def fib(count):
-    ""Returns the Nth Fibonacci calculated recursively""
-
-    if count <=2:
-        return 1
-    else:
-        return fib(count-1) + fib(count-2)
-"""
+# recursive version is elegant but very inefficient for large count
+# def fib(count):
+#     ""Returns the Nth Fibonacci calculated recursively""
+#
+#     if count <=2:
+#         return 1
+#     else:
+#         return fib(count-1) + fib(count-2)
 
 
 def fibit(count):
