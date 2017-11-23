@@ -8,6 +8,9 @@ http://www.practicepython.org/exercise/2017/02/06/34-birthday-json.html
 """
 
 import json
+from InputHandler import menuchoice
+
+VERBOSE = False
 
 
 def to_json(filename, collection):
@@ -47,12 +50,54 @@ def round_trip_test():
         print("Successful round trip via JSON")
 
 
+def find_action(bdays):
+    """Perform the user requested 'Find' action"""
+
+    findname = input("\nType any portion of a name to find the birthday\n"
+                     " (example: try 'Geo' for George Washington: ")
+    foundnames = {key: value for key, value in bdays.items() if findname in key}
+    if VERBOSE:
+        print(foundnames)
+    if foundnames:
+        print("\n Found the following matching names:")
+        for namekey in foundnames:
+            print(namekey + ", who's birthday is: ", foundnames[namekey])
+        print("")
+    else:
+        print("No names found matching: ", findname)
+
+
 def main():
     """Run the main Birthday program"""
 
-    verbose = True
-    if verbose:
+    actionmenu = [
+        "F Find a birthday by name",
+        "A Add a name and birthday",
+        "C Show count of birthdays by month",
+        "X Exit the program"
+        ]
+    actionkeys = ['F', 'f', 'A', 'a', 'C', 'c', 'X', 'x']
+    actionprompt = "Please choose an option: "
+
+    if VERBOSE:
         round_trip_test()
+
+    # Load the current version of the JSON before user interaction
+    bdays = from_json("birthdays.json")
+    while True:
+        action = menuchoice(actionprompt, actionmenu, actionkeys)
+        action = action.upper()
+        if VERBOSE:
+            print(action)
+        if action == 'F':
+            find_action(bdays)
+        elif action == 'A':
+            print('\n', action, "is not yet implemented\n")
+        elif action == 'C':
+            print('\n', action, "is not yet implemented\n")
+        elif action == 'X':
+            print("Goodbye!\n")
+            break
 
 
 main()
