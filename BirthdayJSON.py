@@ -53,18 +53,18 @@ def round_trip_test():
 def find_action(bdays):
     """Perform the user requested 'Find' action"""
 
-    findname = input("\nType any portion of a name to find the birthday\n"
-                     " (example: try 'Geo' for George Washington: ")
-    foundnames = {key: value for key, value in bdays.items() if findname in key}
-    if VERBOSE:
-        print(foundnames)
-    if foundnames:
-        print("\n Found the following matching names:")
-        for namekey in foundnames:
-            print(namekey + ", who's birthday is: ", foundnames[namekey])
-        print("")
+    findname = input("\nType a name to find the birthday\n"
+                     " (examples: try 'George Washington'\n"
+                     "            or   'Albert Einstein': ")
+    try:
+        foundbday = bdays[findname]
+    except KeyError:
+        foundbday = ""
+    if foundbday:
+        print("\n Found", findname + ", who's birthday is: ",
+              foundbday, "\n")
     else:
-        print("No names found matching: ", findname)
+        print("\nNo names found matching: ", findname, "\n")
 
 
 def main():
