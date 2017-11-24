@@ -21,15 +21,22 @@ def to_json(filename, collection):
 
 def from_json(filename):
     """Returns a collection with the JSON data from file
-       Note: assumes valid JSON, no error handling"""
-    with open(filename, "r") as infile:
-        return json.load(infile)
+
+       Raises errors for file not found or invalid JSON"""
+    try:
+        with open(filename, "r") as infile:
+            return json.load(infile)
+    except FileNotFoundError:
+        raise FileNotFoundError
+    except ValueError:
+        raise ValueError
 
 
-def round_trip_test():
-    """ Perform a test that data can round trip via JSON file
+def initialize(filename):
+    """ Ensure that the JSON file exists and is readable, create one if necessary
 
-        Side Effect: leaves a "birthdays.json" file
+        Side Effect: Creates a JSON file if none exists by the specified name
+        Returns the JSON as supplied by json.load()
     """
 
     test_data = {
@@ -44,10 +51,15 @@ def round_trip_test():
         "Abraham Lincoln": "February 12, 1809",
         "Benjamin Franklin": "January 17, 1706"
     }
-    to_json("birthdays.json", test_data)
-    rtrip = from_json("birthdays.json")
-    if test_data == rtrip:
-        print("Successful round trip via JSON")
+
+    try:
+        return from_json(filename)
+    except FileNotFoundError:  # If file not found, we make one
+        to_json(filename, test_data)
+        return from_json(filename)
+    except ValueError:  # Die gracefully if not valid JSON
+        print("Input file doesn't contain valid JSON")
+        exit(ValueError)
 
 
 def find_action(bdays):
@@ -79,11 +91,9 @@ def main():
     actionkeys = ['F', 'f', 'A', 'a', 'C', 'c', 'X', 'x']
     actionprompt = "Please choose an option: "
 
-    if VERBOSE:
-        round_trip_test()
+    # Load or create the JSON as appropriate
+    bdays = initialize("birthdays.json")
 
-    # Load the current version of the JSON before user interaction
-    bdays = from_json("birthdays.json")
     while True:
         action = menuchoice(actionprompt, actionmenu, actionkeys)
         action = action.upper()
