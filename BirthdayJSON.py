@@ -100,13 +100,11 @@ def count_action(bdays):
 
     # Because this is a count of months, extract a months list
     # from bdays dict
-    bday_list = list(bdays.values())
-    bday_months = [bday.split()[0] for bday in bday_list]
+    bday_months = [bday.split()[0] for bday in list(bdays.values())]
 
     # Now we can produce the requested count of months
     print("\nHere is the count of birthdays by month:\n\n")
-    bday_count = dict(Counter(bday_months))
-    pp(bday_count)
+    pp(dict(Counter(bday_months)))
     print("\n")
 
 
