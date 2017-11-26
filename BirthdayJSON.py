@@ -10,9 +10,25 @@ http://www.practicepython.org/exercise/2017/04/02/36-birthday-plots.html
 """
 
 import json
-from collections import Counter
+import calendar
+from collections import Counter, OrderedDict
 from pprint import pprint as pp
+from bokeh.plotting import figure, show, output_file
 from InputHandler import menuchoice
+
+
+# We make an OrderedCounter class as shown in the collections documentation
+# NOTE: This is working, but I'm not sure I like it.
+#       Revisit this part of the implementation for something
+#       a bit more explicit
+class OrderedCounter(Counter, OrderedDict):
+    """Counter that remembers the order elements are first encountered"""
+
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, OrderedDict(self))
+
+    def __reduce__(self):
+        return self.__class__, (OrderedDict(self),)
 
 
 def to_json(filename, collection):
@@ -95,23 +111,49 @@ def add_action(filename, bdays):
           addbday, "\n")
 
 
-def count_action(bdays):
-    """Perform the user requested 'Count' action"""
+def extract_months(bdays):
+    """Returns a list of the month names from the dict values"""
 
-    # Because this is a count of months, extract a months list
-    # from bdays dict
-    bday_months = [bday.split()[0] for bday in list(bdays.values())]
+    return [bday.split()[0] for bday in list(bdays.values())]
+
+
+def count_action(bdays):
+    """Perform the user requested 'Count' action
+
+       Note: The 'specification' is conflicting.  It shows the desired
+                output looking "like a dict" but also looking sorted.
+                since there is no easy way to achieve BOTH, this just
+                does "like a dict", but unsorted.  Plot_action() uses
+                a sorted version.
+    """
 
     # Now we can produce the requested count of months
     print("\nHere is the count of birthdays by month:\n\n")
-    pp(dict(Counter(bday_months)))
+    pp(dict(Counter(extract_months(bdays))))
     print("\n")
 
 
 def plot_action(bdays):
     """Peform the user requested 'Plot' action"""
 
-    print("\nNot yet implemented\n")
+    # Produce the list of months in month order sort
+    month_names = list(calendar.month_name)[1:]
+    bday_months = sorted(extract_months(bdays), key=month_names.index)
+
+    # Now produce the count of months using an OrderedCounter
+    bday_count = OrderedCounter(bday_months)
+
+    xvals = list(bday_count.keys())
+    yvals = list(bday_count.values())
+
+    output_file("BdayPlot.html")
+    x_categories = list(calendar.month_name)[1:]
+
+    bok_pl = figure(plot_width=1000,
+                    x_range=x_categories)
+    bok_pl.vbar(x=xvals, top=yvals, width=0.5)
+
+    show(bok_pl)
 
 
 def main():
