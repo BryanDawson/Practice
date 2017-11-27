@@ -11,24 +11,10 @@ http://www.practicepython.org/exercise/2017/04/02/36-birthday-plots.html
 
 import json
 import calendar
-from collections import Counter, OrderedDict
+from collections import Counter
 from pprint import pprint as pp
 from bokeh.plotting import figure, show, output_file
 from InputHandler import menuchoice
-
-
-# We make an OrderedCounter class as shown in the collections documentation
-# NOTE: This is working, but I'm not sure I like it.
-#       Revisit this part of the implementation for something
-#       a bit more explicit
-class OrderedCounter(Counter, OrderedDict):
-    """Counter that remembers the order elements are first encountered"""
-
-    def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, OrderedDict(self))
-
-    def __reduce__(self):
-        return self.__class__, (OrderedDict(self),)
 
 
 def to_json(filename, collection):
@@ -136,15 +122,13 @@ def count_action(bdays):
 def plot_action(bdays):
     """Peform the user requested 'Plot' action"""
 
-    # Produce the list of months in month order sort
-    month_names = list(calendar.month_name)[1:]
-    bday_months = sorted(extract_months(bdays), key=month_names.index)
+    bday_months = extract_months(bdays)
+    bday_count = Counter(bday_months)
 
-    # Now produce the count of months using an OrderedCounter
-    bday_count = OrderedCounter(bday_months)
-
-    xvals = list(bday_count.keys())
-    yvals = list(bday_count.values())
+    # Produce a list of all 12 months in month order
+    xvals = list(calendar.month_name)[1:]
+    # Extract a list of the counts for all months in month order
+    yvals = [bday_count[month_name] for month_name in xvals]
 
     output_file("BdayPlot.html")
     x_categories = list(calendar.month_name)[1:]
